@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 
 @RestController
 @RequestMapping("/api/products")
@@ -69,13 +68,16 @@ public class ProductController {
             @RequestParam(value = "price", required = false) BigDecimal price,
             @RequestParam(value = "stockQuantity", required = false) Integer stockQuantity,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam(value = "productId", required = true) Long productId,
             @RequestParam(value = "description",required = false) String description){
+
         ProductDto productDto1 = new ProductDto();
         productDto1.setName(name);
         productDto1.setSku(sku);
         productDto1.setPrice(price);
         productDto1.setStockQuantity(stockQuantity);
         productDto1.setCategoryId(categoryId);
+        productDto1.setProductId(productId);
         productDto1.setDescription(description);
 
         return ResponseEntity.ok(productService.updateProduct(productDto1,imageFile));

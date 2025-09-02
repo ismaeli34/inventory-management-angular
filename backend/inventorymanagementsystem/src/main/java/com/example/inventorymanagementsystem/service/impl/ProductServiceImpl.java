@@ -30,6 +30,8 @@ public class ProductServiceImpl implements ProductService {
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
     private static final String IMAGE_DIRECTORY = System.getProperty("user.dir") + "/product-image/";
+    private static int imageCounter = 1; // keeps track of image numbers
+
 
 
     @Override
@@ -78,10 +80,10 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setName(productDto.getName());
         }
         if (productDto.getSku() !=null && !productDto.getSku().isBlank()){
-            existingProduct.setSku(productDto.getName());
+            existingProduct.setSku(productDto.getSku());
         }
         if (productDto.getDescription() !=null && !productDto.getDescription().isBlank()){
-            existingProduct.setDescription(productDto.getName());
+            existingProduct.setDescription(productDto.getDescription());
         }
         if (productDto.getPrice() !=null && productDto.getPrice().compareTo(BigDecimal.ZERO) >=0){
             existingProduct.setPrice(productDto.getPrice());
@@ -127,7 +129,6 @@ public class ProductServiceImpl implements ProductService {
         return Response.builder()
                 .status(200)
                 .message("Product " + id  +" deleted sucessfully")
-                .product(modelMapper.map(product,ProductDto.class))
                 .build();
     }
 
@@ -142,6 +143,7 @@ public class ProductServiceImpl implements ProductService {
             directory.mkdir();
             log.info("Directory was created");
         }
+
         // generate unique file name for the image
         String uniqueFileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
         // get the absolute path of the image

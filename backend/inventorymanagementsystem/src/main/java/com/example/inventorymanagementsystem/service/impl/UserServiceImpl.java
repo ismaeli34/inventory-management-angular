@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
         if (userDto.getPassword() !=null && !userDto.getPassword().isEmpty()){
             existingUser.setPhoneNumber(passwordEncoder.encode(userDto.getPassword()));
         }
+
         userRepository.save(existingUser);
 
         return Response.builder()
