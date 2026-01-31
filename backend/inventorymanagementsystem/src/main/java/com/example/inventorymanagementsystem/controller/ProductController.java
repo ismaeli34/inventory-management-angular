@@ -53,11 +53,18 @@ public class ProductController {
         }
     }
 
+
+
+
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> getAllProducts(){
         return ResponseEntity.ok(productService.getAllProducts());
     }
+
+
+
+
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

@@ -1,0 +1,40 @@
+<div class="category-page">
+
+  @if (message){
+    <div class="message">
+      {{message}}
+    </div>
+  }
+
+  <div class="category-header">
+<!--    FORM TO ADD AND EDIT CATEGORY-->
+    <div class="add-cat">
+      <h1>Category</h1>
+      <br>
+      <input type="text" [(ngModel)]="categoryName" placeholder="Category Name" />
+      @if (!isEditing){
+        <button (click)="addCategory()" >Add Category</button>
+      }
+      @if (isEditing){
+        <button (click)="editCategory()" >Edit Category</button>
+      }
+<!--      DISPLAY THE CATEGORIES -->
+
+      @if (categories.length > 0){
+        <ul class="category-list">
+          @for (category of categories; track category.id) {
+          <li class="category-item">
+            <span>{{category.name}}</span>
+            <div class="category-actions">
+                <button (click)="handleEditCategory(category)" >Edit</button>
+                <button   (click)="handleDeleteCategory(category.id)" >Delete</button>
+
+            </div>
+          </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+
+</div>

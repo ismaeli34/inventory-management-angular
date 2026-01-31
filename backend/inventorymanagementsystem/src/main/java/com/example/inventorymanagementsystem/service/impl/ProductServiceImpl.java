@@ -30,6 +30,10 @@ public class ProductServiceImpl implements ProductService {
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
     private static final String IMAGE_DIRECTORY = System.getProperty("user.dir") + "/product-image/";
+    // After your frontend is setup write this so the image is saved on frontend public folder
+
+    private static final String IMAGE_DIRECTORY_FRONTEND = "/Users/test/Documents/projects/fullstack/InventoryManagementSystem/frontend/inventory-angular/public/products/";
+
     private static int imageCounter = 1; // keeps track of image numbers
 
 
@@ -50,8 +54,10 @@ public class ProductServiceImpl implements ProductService {
                 .category(category)
                 .build();
         if (imageFile !=null){
-            String imagePath = saveImage(imageFile);
+            String imagePath = saveImageToFrontendPublic(imageFile);
             productToSave.setImageUrl(imagePath);
+
+
         }
 
         // save the product to our database
@@ -63,11 +69,13 @@ public class ProductServiceImpl implements ProductService {
     public Response updateProduct(ProductDto productDto, MultipartFile imageFile) {
         Product existingProduct = productRepository.findById(productDto.getProductId())
                 .orElseThrow(() -> new NotFoundException("Product not found"));
+
         // check if image is associated with the update request
-        if (imageFile != null && !imageFile.isEmpty()){
-            String imagePath = saveImage(imageFile);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imagePath = saveImageToFrontendPublic(imageFile);
             existingProduct.setImageUrl(imagePath);
         }
+
         // check if category is to be changed for the product
         if (productDto.getCategoryId() != null && productDto.getCategoryId() > 0){
             Category category =  categoryRepository.findById(productDto.getCategoryId())
@@ -102,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = productRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
         List<ProductDto> productDtos = modelMapper.map(productList,
-                new TypeToken<List<UserDto>>() {}.getType());
+                new TypeToken<List<ProductDto>>() {}.getType());
         return Response.builder().status(200).message("success").products(productDtos).build();
     }
 
@@ -132,6 +140,33 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+
+    private String saveImageToFrontendPublic(MultipartFile imageFile){
+        // validate image check
+        if (!imageFile.getContentType().startsWith("image/")){
+            throw new IllegalArgumentException("Only image files are allowed");
+        }
+        // create the directory to store images if it does not exist
+        File directory = new File(IMAGE_DIRECTORY_FRONTEND);
+        if (!directory.exists()){
+            directory.mkdir();
+            log.info("Directory was created");
+        }
+
+        // generate unique file name for the image
+        String uniqueFileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+        // get the absolute path of the image
+        String imagePath = IMAGE_DIRECTORY_FRONTEND + uniqueFileName;
+        try {
+            File destinationFile = new File(imagePath);
+            imageFile.transferTo(destinationFile); // we are transfering(writing to this folder)
+
+        }catch (Exception e){
+            throw  new IllegalArgumentException("Error Occured while saving IMAGE"+ e.getMessage());
+        }
+        return "products/" + uniqueFileName;
+    }
+
     private String saveImage(MultipartFile imageFile){
         // validate image check
         if (!imageFile.getContentType().startsWith("image/")){
@@ -157,4 +192,8 @@ public class ProductServiceImpl implements ProductService {
         }
         return imagePath;
     }
+
+
+
+
 }

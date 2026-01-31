@@ -1,0 +1,29 @@
+<div class="supplier-page">
+  @if (message){
+    <p class="message">{{message}}</p>
+  }
+
+  <div class="supplier-header">
+    <h1>Supplier</h1>
+    <br>
+    <div class="add-sup">
+      <button (click)="navigateToAddSupplierPage()" >Add Supplier</button>
+
+    </div>
+  </div>
+
+<!--  SUPPLIER LIST-->
+  @if (suppliers.length > 0){
+    <ul class="supplier-list">
+      @for (supplier of suppliers; track supplier.id) {
+        <li class="supplier-item" [attr.key]="supplier.id">
+          <span>{{supplier.name}}</span>
+          <div class="supplier-actions">
+            <button (click)="navigateToEditSupplierPage(supplier.id)" >Edit</button>
+            <button (click)="handleDeleteSupplier(supplier.id)" >Delete</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>

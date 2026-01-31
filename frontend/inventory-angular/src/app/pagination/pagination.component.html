@@ -1,0 +1,20 @@
+<div class="pagination-container">
+<!--PREVIOUS BUTTON-->
+  <button class="pagination-button" [disabled]="currentPage === 1" (click)="onPageChange(currentPage-1)" >
+    &laquo;Prev
+
+  </button>
+<!--  PAGE NUMBER BUTTON-->
+  @for(page of pageNumbers; track page){
+    <button class="pagination-button"
+            (click)="onPageChange(page)"
+            [class.active]="currentPage === page">{{page}}</button>
+  }
+
+<!--  NEXT BUTTON-->
+  <button class="pagination-button" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage+1)" >
+    Next &raquo;
+
+  </button>
+
+</div>
